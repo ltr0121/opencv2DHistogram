@@ -82,3 +82,20 @@ class Stitcher:
             return (matches, H, status)
 
         return None
+
+    def drawMatches(selfself, imageA, imageB, kpsA, kpsB, matches, status):
+
+        (hA, wA) = imageA.shape[:2]
+        (hB, wB) = imageB.shape[:2]
+        vis = np.zeros((max(hA, hB), wA + wB, 3), dtype="uint8")
+        vis[0:hA, 0:wA] = imageA
+        vis[0:hB, wA:] = imageB
+
+        for((trainIdx, queryIdx), s) in zip(matches, status):
+
+            if s == 1:
+                ptA = (int(kpsA[queryIdx][0], int(kpsA[queryIdx][1])))
+                ptB = (int(kpsB[trainIdx][0] + wA, int(kpsB[trainIdx][1])))
+                cv2.line(vis, ptA, ptB, (0, 225, 0), 1)
+
+        return vis
