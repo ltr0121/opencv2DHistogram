@@ -60,3 +60,15 @@ class Stitcher:
 
         # return  a tuple of keypoints and features
         return (kps, features)
+
+    def matchKeypoints(self, kpsA, kpsB, featuresA, featuresB, ratio, reprojThresh):
+        # compute the raw matches and initialize the list of actual matches
+        matcher = cv2.DescriptorMatcher_create("BruteForce")
+        rawMatches = matcher.knnMatch(featuresA, featuresB, 2)
+        matches = []
+
+        # loop over the raw matches
+        for m in rawMatches:
+            # ensure the distance is within a certain ratio of each other (i.e. Lowe;s ratio test)
+            if len(m) == 2 and m[0].distance < m[1].distance * ratio:
+                matches.append((m[0],trainIds, m[0].queryIdx))
